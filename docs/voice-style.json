@@ -1,0 +1,101 @@
+{
+  "style_id": "vorox_voice_style_v1",
+  "schema_version": "1.1",
+  "top_level_category": "VOICE",
+  "defaults": {
+    "role": "SYSTEM",
+    "delivery": "NEUTRAL",
+    "substate": "NONE"
+  },
+  "categorization": {
+    "cat_rules": [
+      "cat must be exactly 'VOICE' (uppercase) for this system"
+    ],
+    "trigger_rules": [
+      "trigger must be uppercase SNAKE_CASE",
+      "trigger should map to a game/system event and remain reusable",
+      "no free-form prose triggers"
+    ],
+    "substate_rules": [
+      "substate refines trigger without changing core meaning",
+      "substate may be empty; treat as 'NONE' for naming",
+      "substate must be uppercase SNAKE_CASE when provided"
+    ],
+    "role_rules": [
+      "role must be uppercase SNAKE_CASE (A-Z, 0-9, underscore)",
+      "role describes the speaking function, not a character name"
+    ],
+    "delivery_rules": [
+      "delivery is a performance variant only (tone, not meaning)",
+      "delivery may be empty; treat as 'NEUTRAL' for naming",
+      "delivery must be uppercase SNAKE_CASE when provided"
+    ]
+  },
+  "asset_naming": {
+    "pattern": "{top}_{role}_{trigger}_{substate}_{delivery}_v{NN}",
+    "top_literal": "voice",
+    "token_rules": [
+      "asset_name must be lowercase",
+      "use underscores only",
+      "no spaces, hyphens, dots",
+      "collapse multiple underscores",
+      "never repeat the same token twice in a row (e.g. greet_greet)"
+    ],
+    "numbering": {
+      "start": 1,
+      "pad": 2,
+      "scope": "per (role, trigger, substate, delivery)",
+      "notes": [
+        "substate empty -> 'none' in name",
+        "delivery empty -> 'neutral' in name"
+      ]
+    }
+  },
+  "row_requirements": {
+    "usage_notes_required": true,
+    "usage_notes_minimum": [
+      "when to play it (context/trigger condition)",
+      "any delivery constraint (if not obvious)"
+    ],
+    "text_rules": [
+      "text is the spoken content only",
+      "no filename fragments in text",
+      "no bracketed metadata in text"
+    ]
+  },
+  "normalization": {
+    "dedupe_policy": "no_duplicate_asset_name",
+    "scope_definition": "(role, trigger, substate, delivery)",
+    "case_policy": {
+      "asset_name": "lowercase",
+      "cat_role_trigger_substate_delivery": "uppercase",
+      "text": "preserve_user_case"
+    }
+  },
+  "generation_contract_for_llms": {
+    "must": [
+      "emit rows matching sheet_schema order",
+      "fill every column",
+      "keep cat as 'VOICE'",
+      "follow asset_naming.pattern exactly (with the normalization rules)",
+      "use numbering per asset_naming.numbering.scope with pad"
+    ],
+    "must_not": [
+      "invent extra columns",
+      "change column order",
+      "duplicate tokens in asset_name",
+      "omit usage_notes"
+    ]
+  },
+  "planning_sheet": "ods",
+  "sheet_schema": [
+    "cat",
+    "role",
+    "trigger",
+    "substate",
+    "delivery",
+    "asset_name",
+    "text",
+    "usage_notes"
+  ]
+}

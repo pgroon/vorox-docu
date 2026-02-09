@@ -1,4 +1,4 @@
-# Voice Asset Pipeline
+# Voice Asset Pipeline Documentation
 
 This repository documents a CSV-driven workflow for creating reusable voice and dialogue assets, primarily for game development and interactive media.
 
